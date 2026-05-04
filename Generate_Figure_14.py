@@ -179,6 +179,12 @@ valid_rel = (
     & (P3_mean > 1.0)
 )
 
+# Use the same x-axis limits for both subplots.
+# This makes panel (b) use the same mean-power scale as panel (a).
+all_x = np.concatenate([NM_mean[np.isfinite(NM_mean)], P3_mean[np.isfinite(P3_mean)]])
+x_min = -50
+x_max = np.nanmax(all_x) * 1.05
+
 fig, axes = plt.subplots(1, 2, figsize=(12, 5))
 
 # -----------------------------------------------------
@@ -202,8 +208,20 @@ axes[0].scatter(
 
 axes[0].set_xlabel("Mean Power (kW)", fontsize=12)
 axes[0].set_ylabel("Standard Deviation (kW)", fontsize=12)
+axes[0].set_xlim(x_min, x_max)
 axes[0].grid(True, alpha=0.3)
 axes[0].legend(fontsize=10)
+
+# Panel label below the graph
+axes[0].text(
+    0.5,
+    -0.15,
+    "(a) Absolute fluctuation",
+    transform=axes[0].transAxes,
+    ha="center",
+    va="top",
+    fontsize=12
+)
 
 # -----------------------------------------------------
 # (b) Relative noise
@@ -226,11 +244,26 @@ axes[1].scatter(
 
 axes[1].set_xlabel("Mean Power (kW)", fontsize=12)
 axes[1].set_ylabel("Relative Noise (%)", fontsize=12)
+axes[1].set_xlim(x_min, x_max)
 axes[1].grid(True, alpha=0.3)
 axes[1].legend(fontsize=10)
 
+# Panel label below the graph
+axes[1].text(
+    0.5,
+    -0.15,
+    "(b) Relative fluctuation",
+    transform=axes[1].transAxes,
+    ha="center",
+    va="top",
+    fontsize=12
+)
+
+# Leave enough bottom margin for panel labels
 plt.tight_layout()
+plt.subplots_adjust(bottom=0.18)
+
 plt.savefig(OUT_FIG, dpi=300)
-plt.show()
+# plt.show()
 
 print(f"Saved figure: {OUT_FIG}")
